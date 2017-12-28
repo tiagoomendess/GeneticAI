@@ -25,10 +25,10 @@ namespace IA_TP
             var mutation = new ReverseSequenceMutation();
             var fitness = new Fitness();
             var chromosome = new Cromosoma();
-            var population = new Population(1000, 1000, chromosome);
+            var population = new Population(500, 500, chromosome);
 
             var ga = new GeneticAlgorithm(population, fitness, selection, crossover, mutation);
-            ga.Termination = new OrTermination(new GenerationNumberTermination(55000), new FitnessThresholdTermination(0.99));
+            ga.Termination = new OrTermination(new GenerationNumberTermination(100000), new FitnessThresholdTermination(99));
 
             Console.WriteLine("Algoritmo a correr...");
 
