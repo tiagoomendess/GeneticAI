@@ -44,7 +44,7 @@ namespace IA_TP
 
             int[] valores = { 0, 1, 2, 3, 4, 5, 6 };
             Random r = new Random();
-            int escolha = r.Next(0, 6);
+            int escolha = r.Next(0, 7);
 
             return new Gene(valores[escolha]);
         }

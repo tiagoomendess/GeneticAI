@@ -21,23 +21,27 @@ namespace IA_TP
             genes = chromosome.GetGenes();
             tamanho = genes.Length;
 
-            #region MAIN_CICLE
+            #region CICLO_HORIZONTAL
             //Variaveis necessarias para o ciclo principal
             int finalFuncPos;
             int valorAtual, proximoValor;
             int diasConsecutivos, totalTurnos, noitesConsecutivas;
             int pos;
             int diaAtual;
+            int diasFolgaDuplaFDS;
 
             //Este ciclo calcula a Regra dos 3 turnos e dos 7 dias consecutivos
             //1º ciclo percorre na vertical
             for (int i = 0; i < Cromosoma.totalFuncionarios; i++)
             {
+
+                //Reiniciar variaveis, passou a outro funcionario
                 finalFuncPos = (i * Cromosoma.totalDias) + Cromosoma.totalDias;
                 diasConsecutivos = 0;
                 totalTurnos = 0;
                 noitesConsecutivas = 0;
                 diaAtual = 1;
+                diasFolgaDuplaFDS = 0;
 
                 //Segundo ciclo percorre na horizontal
                 for (int j = 0; j < Cromosoma.totalDias; j++)
@@ -45,20 +49,27 @@ namespace IA_TP
 
                     pos = (i * Cromosoma.totalDias) + j;
                     valorAtual = (int)genes[pos].Value;
-                    
+
                     //Não	se	podem	fazer	3	turnos	seguidos
                     if (pos + 1 < finalFuncPos)
                     {
                         proximoValor = (int)genes[pos + 1].Value;
 
                         if (valorAtual == 3 && proximoValor == 4)
-                            acumulado += 20;
+                            acumulado += 10;
 
                         if (valorAtual == 5 && (proximoValor == 1 || proximoValor == 4 || proximoValor == 6))
-                            acumulado += 20;
+                            acumulado += 10;
 
                         if (valorAtual == 6 && proximoValor == 1)
-                            acumulado += 20;
+                            acumulado += 10;
+
+                        //Se tiver folga ao sabado e domingo adiciona
+                        if ((diaAtual != 1) && ((diaAtual - 1) % 6 == 0 && valorAtual == 0))
+                        {
+                            if (proximoValor == 0)
+                                diasFolgaDuplaFDS++;
+                        }
                     }
 
                     //Não	se	pode	trabalhar	mais	do	que	7	dias	consecutivos
@@ -84,34 +95,45 @@ namespace IA_TP
                         acumulado += 20;
                         noitesConsecutivas = 0;
                     }
+                    //----------------------
 
                     //Não se pode fazer mais do que 20 turnos em 4 semanas
                     totalTurnos += QuantosTurnos(valorAtual);
 
-                    if (diaAtual % (7 * 4) == 0) //A cada 4 semanas
+                    if ((diaAtual != 1) && diaAtual % (7 * 4) == 0) //A cada 4 semanas
                     {
                         if (totalTurnos > 20)
-                        {
                             acumulado += 30 * (totalTurnos - 20); //Quanto mais turnos tiver a mais, mais é penalizado
-                        }
+
+                        if (diasFolgaDuplaFDS != 1)
+                            acumulado += diasFolgaDuplaFDS * Math.Abs(diasFolgaDuplaFDS);
+
+                        //reiniciar variaveis, ja passou 4 semanas
+                        totalTurnos = 0;
+                        diasFolgaDuplaFDS = 0;
                     }
 
                     diaAtual++;
                 }
+
+
             }
             #endregion
 
-            #region MINIMO_TRABALHADORES
+            #region CICLO_VERTICAL
             int totalFuncionariosTM, totalFuncionariosTT, totalFuncionariosTN;
+
             diaAtual = 1;
 
             for (int i = 0; i < Cromosoma.totalDias; i++)
             {
+
+                //reiniciar Variaveis, passou para outro dia
                 totalFuncionariosTM = totalFuncionariosTT = totalFuncionariosTN = 0;
 
                 for (int j = 0; j < Cromosoma.totalFuncionarios; j++)
                 {
-                    //pos = (i * Cromosoma.totalDias) + j;
+
                     pos = (j * Cromosoma.totalDias) + i;
                     valorAtual = (int)genes[pos].Value;
 
@@ -127,25 +149,25 @@ namespace IA_TP
                 }
 
                 //Se o dia e fim de semana
-                if (diaAtual % 7 == 0 || (diaAtual - 1) % 6 == 0)
+                if ((diaAtual != 1) && (diaAtual % 7 == 0 || (diaAtual - 1) % 6 == 0))
                 {
                     //Turno da manha
                     if (totalFuncionariosTM == Cromosoma.TM_FDS)
                         acumulado += 0;
                     else
-                        acumulado += 30 * Math.Abs(totalFuncionariosTM - Cromosoma.TM_FDS);
+                        acumulado += 25 * Math.Abs(totalFuncionariosTM - Cromosoma.TM_FDS);
 
                     //Turno da tarde
                     if (totalFuncionariosTT == Cromosoma.TT_FDS)
                         acumulado += 0;
                     else
-                        acumulado += 30 * Math.Abs(totalFuncionariosTM - Cromosoma.TT_FDS);
+                        acumulado += 25 * Math.Abs(totalFuncionariosTM - Cromosoma.TT_FDS);
 
                     //Turno da noite
                     if (totalFuncionariosTN == Cromosoma.TN_FDS)
                         acumulado += 0;
                     else
-                        acumulado += 30 * Math.Abs(totalFuncionariosTM - Cromosoma.TN_FDS);
+                        acumulado += 25 * Math.Abs(totalFuncionariosTM - Cromosoma.TN_FDS);
 
                 }
                 else //Dias Uteis
@@ -154,19 +176,19 @@ namespace IA_TP
                     if (totalFuncionariosTM == Cromosoma.TM_SEMANA)
                         acumulado += 0;
                     else
-                        acumulado += 30 * Math.Abs(totalFuncionariosTM - Cromosoma.TM_SEMANA);
+                        acumulado += 25 * Math.Abs(totalFuncionariosTM - Cromosoma.TM_SEMANA);
 
                     //Turno da tarde
                     if (totalFuncionariosTT == Cromosoma.TT_SEMANA)
                         acumulado += 0;
                     else
-                        acumulado += 30 * Math.Abs(totalFuncionariosTM - Cromosoma.TT_SEMANA);
+                        acumulado += 25 * Math.Abs(totalFuncionariosTM - Cromosoma.TT_SEMANA);
 
                     //Turno da noite
                     if (totalFuncionariosTN == Cromosoma.TN_SEMANA)
                         acumulado += 0;
                     else
-                        acumulado += 30 * Math.Abs(totalFuncionariosTM - Cromosoma.TN_SEMANA);
+                        acumulado += 25 * Math.Abs(totalFuncionariosTM - Cromosoma.TN_SEMANA);
                 }
 
                 diaAtual++;
@@ -174,7 +196,10 @@ namespace IA_TP
 
             #endregion
 
-            return 100 / (acumulado + 0.01);
+            if (acumulado > 0)
+                return 100.00 / acumulado;
+            else
+                return 100.00;
         }
 
         /// <summary>
