@@ -153,19 +153,19 @@ namespace IA_TP
                 {
                     //Turno da manha
                     if (totalFuncionariosTM == Cromosoma.TM_FDS)
-                        acumulado += 0;
+                        acumulado -= 1;
                     else
                         acumulado += 25 * Math.Abs(totalFuncionariosTM - Cromosoma.TM_FDS);
 
                     //Turno da tarde
                     if (totalFuncionariosTT == Cromosoma.TT_FDS)
-                        acumulado += 0;
+                        acumulado -= 1;
                     else
                         acumulado += 25 * Math.Abs(totalFuncionariosTM - Cromosoma.TT_FDS);
 
                     //Turno da noite
                     if (totalFuncionariosTN == Cromosoma.TN_FDS)
-                        acumulado += 0;
+                        acumulado -= 1;
                     else
                         acumulado += 25 * Math.Abs(totalFuncionariosTM - Cromosoma.TN_FDS);
 
@@ -174,19 +174,19 @@ namespace IA_TP
                 {
                     //Turno da manha
                     if (totalFuncionariosTM == Cromosoma.TM_SEMANA)
-                        acumulado += 0;
+                        acumulado -= 1;
                     else
                         acumulado += 25 * Math.Abs(totalFuncionariosTM - Cromosoma.TM_SEMANA);
 
                     //Turno da tarde
                     if (totalFuncionariosTT == Cromosoma.TT_SEMANA)
-                        acumulado += 0;
+                        acumulado -= 1;
                     else
                         acumulado += 25 * Math.Abs(totalFuncionariosTM - Cromosoma.TT_SEMANA);
 
                     //Turno da noite
                     if (totalFuncionariosTN == Cromosoma.TN_SEMANA)
-                        acumulado += 0;
+                        acumulado -= 1;
                     else
                         acumulado += 25 * Math.Abs(totalFuncionariosTM - Cromosoma.TN_SEMANA);
                 }
