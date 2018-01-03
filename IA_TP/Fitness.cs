@@ -28,7 +28,8 @@ namespace IA_TP
             int diasConsecutivos, totalTurnos, noitesConsecutivas;
             int pos;
             int diaAtual;
-            int diasFolgaDuplaFDS;
+            int totalFolgaDuplaFDS;
+            int totalFolgaDupla;
 
             //Este ciclo calcula a Regra dos 3 turnos e dos 7 dias consecutivos
             //1º ciclo percorre na vertical
@@ -41,7 +42,8 @@ namespace IA_TP
                 totalTurnos = 0;
                 noitesConsecutivas = 0;
                 diaAtual = 1;
-                diasFolgaDuplaFDS = 0;
+                totalFolgaDuplaFDS = 0;
+                totalFolgaDupla = 0;
 
                 //Segundo ciclo percorre na horizontal
                 for (int j = 0; j < Cromosoma.totalDias; j++)
@@ -56,19 +58,36 @@ namespace IA_TP
                         proximoValor = (int)genes[pos + 1].Value;
 
                         if (valorAtual == 3 && proximoValor == 4)
-                            acumulado += 10;
+                            acumulado += 20;
 
                         if (valorAtual == 5 && (proximoValor == 1 || proximoValor == 4 || proximoValor == 6))
-                            acumulado += 10;
+                            acumulado += 20;
 
                         if (valorAtual == 6 && proximoValor == 1)
-                            acumulado += 10;
+                            acumulado += 20;
 
                         //Se tiver folga ao sabado e domingo adiciona
                         if ((diaAtual != 1) && ((diaAtual - 1) % 6 == 0 && valorAtual == 0))
                         {
                             if (proximoValor == 0)
-                                diasFolgaDuplaFDS++;
+                                totalFolgaDuplaFDS++;
+                        }
+
+                        //No	período	de	um	mês	deve	existir	pelo	menos	duas	folgas	com	dois	dias	consecutivos
+                        if (valorAtual == 0 && proximoValor == 0)
+                            totalFolgaDupla++;
+
+                        //Quando um	dia	de	folga	é	no	fim	de	semana,	a	folga	deve	ser	de	dois	dias	consecutivos
+                        if ((diaAtual != 1) && ((diaAtual - 1) % 6 == 0)) //Para o sabado
+                        {
+                            if (valorAtual == 0 && proximoValor == 0)
+                                acumulado -= 0;
+                        }
+
+                        if ((diaAtual != 1) && ((diaAtual) % 7 == 0)) // Para o domingo
+                        {
+                            if (valorAtual == 0 && proximoValor == 0)
+                                acumulado -= 0;
                         }
                     }
 
@@ -102,15 +121,25 @@ namespace IA_TP
 
                     if ((diaAtual != 1) && diaAtual % (7 * 4) == 0) //A cada 4 semanas
                     {
-                        if (totalTurnos > 20)
-                            acumulado += 30 * (totalTurnos - 20); //Quanto mais turnos tiver a mais, mais é penalizado
 
-                        if (diasFolgaDuplaFDS != 1)
-                            acumulado += diasFolgaDuplaFDS * Math.Abs(diasFolgaDuplaFDS);
+                        //Check da regra dos 20 turnos
+                        if (totalTurnos > 20)
+                            acumulado += 40 * (totalTurnos - 20); //Quanto mais turnos tiver a mais, mais é penalizado
+
+                        //Check da regra da folga ao fim de semana
+                        if (totalFolgaDuplaFDS != 1)
+                            acumulado += 40 * Math.Abs(totalFolgaDuplaFDS);
+
+                        //Check da regra de pelo menos 2 folgas duplas
+                        if (totalFolgaDupla != 2)
+                        {
+                            acumulado += 40 * Math.Abs(totalFolgaDuplaFDS);
+                        }
 
                         //reiniciar variaveis, ja passou 4 semanas
                         totalTurnos = 0;
-                        diasFolgaDuplaFDS = 0;
+                        totalFolgaDuplaFDS = 0;
+                        totalFolgaDupla = 0;
                     }
 
                     diaAtual++;
@@ -153,42 +182,42 @@ namespace IA_TP
                 {
                     //Turno da manha
                     if (totalFuncionariosTM == Cromosoma.TM_FDS)
-                        acumulado -= 1;
+                        acumulado -= 0;
                     else
-                        acumulado += 25 * Math.Abs(totalFuncionariosTM - Cromosoma.TM_FDS);
+                        acumulado += 50 * Math.Abs(totalFuncionariosTM - Cromosoma.TM_FDS);
 
                     //Turno da tarde
                     if (totalFuncionariosTT == Cromosoma.TT_FDS)
-                        acumulado -= 1;
+                        acumulado -= 0;
                     else
-                        acumulado += 25 * Math.Abs(totalFuncionariosTM - Cromosoma.TT_FDS);
+                        acumulado += 50 * Math.Abs(totalFuncionariosTM - Cromosoma.TT_FDS);
 
                     //Turno da noite
                     if (totalFuncionariosTN == Cromosoma.TN_FDS)
-                        acumulado -= 1;
+                        acumulado -= 0;
                     else
-                        acumulado += 25 * Math.Abs(totalFuncionariosTM - Cromosoma.TN_FDS);
+                        acumulado += 50 * Math.Abs(totalFuncionariosTM - Cromosoma.TN_FDS);
 
                 }
                 else //Dias Uteis
                 {
                     //Turno da manha
                     if (totalFuncionariosTM == Cromosoma.TM_SEMANA)
-                        acumulado -= 1;
+                        acumulado -= 0;
                     else
-                        acumulado += 25 * Math.Abs(totalFuncionariosTM - Cromosoma.TM_SEMANA);
+                        acumulado += 50 * Math.Abs(totalFuncionariosTM - Cromosoma.TM_SEMANA);
 
                     //Turno da tarde
                     if (totalFuncionariosTT == Cromosoma.TT_SEMANA)
-                        acumulado -= 1;
+                        acumulado -= 0;
                     else
-                        acumulado += 25 * Math.Abs(totalFuncionariosTM - Cromosoma.TT_SEMANA);
+                        acumulado += 50 * Math.Abs(totalFuncionariosTM - Cromosoma.TT_SEMANA);
 
                     //Turno da noite
                     if (totalFuncionariosTN == Cromosoma.TN_SEMANA)
-                        acumulado -= 1;
+                        acumulado -= 0;
                     else
-                        acumulado += 25 * Math.Abs(totalFuncionariosTM - Cromosoma.TN_SEMANA);
+                        acumulado += 50 * Math.Abs(totalFuncionariosTM - Cromosoma.TN_SEMANA);
                 }
 
                 diaAtual++;

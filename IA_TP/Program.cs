@@ -18,12 +18,12 @@ namespace IA_TP
 {
     class Program
     {
-        static ISelection selection = new EliteSelection();
+        static ISelection selection = new RouletteWheelSelection();
         static ICrossover crossover = new UniformCrossover();
         static IMutation mutation = new ReverseSequenceMutation();
         static Fitness fitness = new Fitness();
         static Cromosoma chromosome = new Cromosoma();
-        static Population population = new Population(500, 500, chromosome);
+        static Population population = new Population(200, 300, chromosome);
         public static GeneticAlgorithm ga = new GeneticAlgorithm(population, fitness, selection, crossover, mutation);
         public static string fitList;
 
@@ -34,7 +34,7 @@ namespace IA_TP
             string bestGenes = "";
             Thread t, j;
 
-            ga.Termination = new OrTermination(new GenerationNumberTermination(200000), new FitnessThresholdTermination(98), new MyTermination());
+            ga.Termination = new OrTermination(new GenerationNumberTermination(900000), new FitnessThresholdTermination(99.999), new MyTermination());
 
             Console.WriteLine("Algoritmo a correr...");
 
@@ -61,10 +61,11 @@ namespace IA_TP
 
             //Começar
             ga.Start();
+            fitList += ga.Population.BestChromosome.Fitness + "\n";
 
             Console.Clear();
-            Console.WriteLine("Melhor Cromosoma (Fitness {0}):", ga.BestChromosome.Fitness);
-            Console.WriteLine(Cromosoma.BuildCalendar(ga.BestChromosome.GetGenes()));
+            Console.WriteLine("Melhor Cromosoma (Fitness {0}):", ga.Population.BestChromosome.Fitness);
+            Console.WriteLine(Cromosoma.BuildCalendar(ga.Population.BestChromosome.GetGenes()));
             Console.WriteLine("Total de Gerações: {0}", ga.Population.GenerationsNumber);
             Console.WriteLine("Tempo Total: {0}h {1}m {2}s", ga.TimeEvolving.Hours, ga.TimeEvolving.Minutes, ga.TimeEvolving.Seconds);
             Console.WriteLine("O Algoritmo Parou!");
