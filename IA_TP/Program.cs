@@ -18,23 +18,24 @@ namespace IA_TP
 {
     class Program
     {
-        static ISelection selection = new RouletteWheelSelection();
-        static ICrossover crossover = new UniformCrossover();
-        static IMutation mutation = new ReverseSequenceMutation();
+        static ISelection selection = new EliteSelection();
+        static ICrossover crossover = new UniformCrossover(0.8f);
+        static IMutation mutation = new UniformMutation();
         static Fitness fitness = new Fitness();
         static Cromosoma chromosome = new Cromosoma();
-        static Population population = new Population(200, 300, chromosome);
+        static Population population = new Population(2000, 2000, chromosome);
         public static GeneticAlgorithm ga = new GeneticAlgorithm(population, fitness, selection, crossover, mutation);
+        
         public static string fitList;
 
         static void Main(string[] args)
         {
+
             Console.WriteLine("A iniciar programa...");
             fitList = "";
-            string bestGenes = "";
             Thread t, j;
 
-            ga.Termination = new OrTermination(new GenerationNumberTermination(900000), new FitnessThresholdTermination(99.999), new MyTermination());
+            ga.Termination = new OrTermination(new GenerationNumberTermination(5000000), new FitnessThresholdTermination(99.999), new MyTermination());
 
             Console.WriteLine("Algoritmo a correr...");
 

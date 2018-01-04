@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GeneticSharp.Domain.Chromosomes;
+using GeneticSharp.Domain.Randomizations;
 
 namespace IA_TP
 {
     class Cromosoma : ChromosomeBase
     {
         public static int totalDias = 28;
-        public static int totalFuncionarios = 14;
+        public static int totalFuncionarios = 15;
         public static int totalGenes = totalDias * totalFuncionarios;
 
         public static int TM_SEMANA = 4; //Minimo de Trabalhadores no Turno da Manha à semana
@@ -42,11 +43,11 @@ namespace IA_TP
              * 6 - manha e noite
              */
 
-            int[] valores = { 0, 1, 2, 3, 4, 5, 6 };
-            Random r = new Random();
-            int escolha = r.Next(0, 7);
+            //int[] valores = { 0, 1, 2, 3, 4, 5, 6 }; //Valores repetidos para ter mais probabilidade de trabalhar apenas 1 turno
+            //Random r = new Random();
+            BasicRandomization random = new BasicRandomization();
 
-            return new Gene(valores[escolha]);
+            return new Gene(random.GetInt(0,7));
         }
 
         public static string BuildCalendar(Gene[] genes)
