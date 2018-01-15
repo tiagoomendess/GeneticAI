@@ -32,7 +32,10 @@ namespace IA_TP
             int delay = 2000; //Vai adicionar de 2 em dois segundos
 
             //Esperar que a instancia de ga seja criada no Main do Program
-            Thread.Sleep(delay);
+            while (Program.ga.BestChromosome == null)
+            {
+                Thread.Sleep(1000);
+            }
 
             while (true)
             {

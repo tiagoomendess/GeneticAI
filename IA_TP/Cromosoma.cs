@@ -11,7 +11,7 @@ namespace IA_TP
     class Cromosoma : ChromosomeBase
     {
         public static int totalDias = 28;
-        public static int totalFuncionarios = 15;
+        public static int totalFuncionarios = 18;
         public static int totalGenes = totalDias * totalFuncionarios;
 
         public static int TM_SEMANA = 4; //Minimo de Trabalhadores no Turno da Manha à semana

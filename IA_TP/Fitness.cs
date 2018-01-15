@@ -69,13 +69,13 @@ namespace IA_TP
 
                         //Não	se	podem	fazer	3	turnos	seguidos
                         if (valorAtual == 3 && proximoValor == 4)
-                            acumulado += 5;
+                            acumulado += 3;
 
                         if (valorAtual == 5 && (proximoValor == 1 || proximoValor == 4 || proximoValor == 6))
-                            acumulado += 5;
+                            acumulado += 3;
 
                         if (valorAtual == 6 && proximoValor == 1)
-                            acumulado += 5;
+                            acumulado += 3;
                         //-----------------
 
 
@@ -134,7 +134,7 @@ namespace IA_TP
 
                     if (diasConsecutivos > 7)
                     {
-                        acumulado += 5;
+                        acumulado += 3;
                         diasConsecutivos = 0;
                     }
                     //-------------------------------
@@ -148,7 +148,7 @@ namespace IA_TP
 
                     if (noitesConsecutivas > 3)
                     {
-                        acumulado += 5;
+                        acumulado += 3;
                         noitesConsecutivas = 0;
                     }
                     //----------------------
@@ -166,7 +166,7 @@ namespace IA_TP
 
                         //Check da regra dos 20 turnos
                         if (totalTurnos > 20)
-                            acumulado += 5;
+                            acumulado += 3;
 
                         //Check da regra da folga ao fim de semana
                         if (totalFolgaDuplaFDS < 1)
@@ -226,31 +226,44 @@ namespace IA_TP
                 if ((diaAtual != 1) && (diaAtual % 7 == 0 || (diaAtual - 1) % 6 == 0))
                 {
                     //Turno da manha
-                    if (totalFuncionariosTM != Cromosoma.TM_FDS)
+                    if (totalFuncionariosTM < Cromosoma.TM_FDS)
                         acumulado += 2;
+                    else if (totalFuncionariosTM > Cromosoma.TM_FDS)
+                        acumulado++;
 
                     //Turno da tarde
-                    if (totalFuncionariosTT != Cromosoma.TT_FDS)
+                    if (totalFuncionariosTT < Cromosoma.TT_FDS)
                         acumulado += 2;
+                    else if (totalFuncionariosTT > Cromosoma.TT_FDS)
+                        acumulado++;
 
                     //Turno da noite
-                    if (totalFuncionariosTN != Cromosoma.TN_FDS)
+                    if (totalFuncionariosTN < Cromosoma.TN_FDS)
                         acumulado += 2;
+                    else if (totalFuncionariosTN > Cromosoma.TN_FDS)
+                        acumulado++;
 
                 }
                 else //Dias Uteis
                 {
                     //Turno da manha
-                    if (totalFuncionariosTM != Cromosoma.TM_SEMANA)
+                    if (totalFuncionariosTM < Cromosoma.TM_SEMANA)
                         acumulado += 2;
+                    else if (totalFuncionariosTM > Cromosoma.TM_SEMANA)
+                        acumulado++;
 
                     //Turno da tarde
-                    if (totalFuncionariosTT != Cromosoma.TT_SEMANA)
+                    if (totalFuncionariosTT < Cromosoma.TT_SEMANA)
                         acumulado += 2;
+                    else if (totalFuncionariosTT < Cromosoma.TT_SEMANA)
+                        acumulado++;
 
                     //Turno da noite
-                    if (totalFuncionariosTN != Cromosoma.TN_SEMANA)
+                    if (totalFuncionariosTN < Cromosoma.TN_SEMANA)
                         acumulado += 2;
+                    else if (totalFuncionariosTN > Cromosoma.TN_SEMANA)
+                        acumulado++;
+
                 }
 
                 diaAtual++;
@@ -268,10 +281,12 @@ namespace IA_TP
             desvio = DesvioPadrao(totaisTurnos);
 
             //Se o desvio padrão for menor que 3 benificiar, se for maior que 4 penalizar
-            if (desvio < 3)
+            if (desvio == 0.0)
+                acumulado -= 3;
+            else if (desvio < 3)
                 acumulado -= 1;
             else if (desvio > 4)
-                acumulado += 1;
+                acumulado += (int)desvio - 3;
 
             #endregion
 
